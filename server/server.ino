@@ -1,37 +1,26 @@
-/*
-   Copyright (c) 2015, Majenko Technologies
-   All rights reserved.
-
-   Redistribution and use in source and binary forms, with or without modification,
-   are permitted provided that the following conditions are met:
-
- * * Redistributions of source code must retain the above copyright notice, this
-     list of conditions and the following disclaimer.
-
- * * Redistributions in binary form must reproduce the above copyright notice, this
-     list of conditions and the following disclaimer in the documentation and/or
-     other materials provided with the distribution.
-
- * * Neither the name of Majenko Technologies nor the names of its
-     contributors may be used to endorse or promote products derived from
-     this software without specific prior written permission.
-
-   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-   DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
-   ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-   ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
+#include <NTPClient.h>
+#include <IOXhop_FirebaseESP32.h>
+
+#define FIREBASE_HOST "https://cervejaproject.firebaseio.com/"
+#define FIREBASE_AUTH "wUVkY1GOhjqga45jdyu7CHG3k8jrja68KWq2TM1n"
+
+// Define NTP Client to get time
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
+StaticJsonBuffer<200> jsonBuffer;
+
+
+
+
+struct temp {
+  String tmp;
+  String data;
+};
+
 
 const char *ssid = "sbsistemas_colaboradores";
 const char *password = "sbsistemas13524500";
@@ -49,23 +38,11 @@ void handleRoot() {
 
   snprintf(temp, 400,
 
-           "<html>\
-  <head>\
-    <meta http-equiv='refresh' content='5'/>\
-    <title>ESP32 Demo</title>\
-    <style>\
-      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-    </style>\
-  </head>\
-  <body>\
-    <h1>Hello from ESP32!</h1>\
-    <p>Uptime: %02d:%02d:%02d</p>\
-    <img src=\"/test.svg\" />\
-  </body>\
-</html>",
+           "<html>  <head>    <meta http-equiv='refresh' content='5'/>    <title>ESP32 Demo</title>    <style>      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }    </style>  </head>  <body>    <h1>Hello from ESP32!</h1>    <p>Uptime: %02d:%02d:%02d</p>    <img src=\"/test.svg\" />  </body></html>",
 
            hr, min % 60, sec % 60
           );
+
   server.send(200, "text/html", temp);
   digitalWrite(led, 0);
 }
@@ -121,6 +98,12 @@ void setup(void) {
   server.onNotFound(handleNotFound);
   server.begin();
   Serial.println("HTTP server started");
+  timeClient.begin();
+  timeClient.setTimeOffset(-10800);
+  temp tmp = getTemperatura();
+  Serial.print(tmp.tmp);
+  Serial.println(tmp.data);
+  ConnectWithDatabase(tmp);
 }
 
 void loop(void) {
@@ -143,4 +126,27 @@ void drawGraph() {
   out += "</g>\n</svg>\n";
 
   server.send(200, "image/svg+xml", out);
+}
+
+
+temp getTemperatura() {
+  while (!timeClient.update()) {
+    timeClient.forceUpdate();
+  }
+  String formattedDate = timeClient.getFormattedDate();
+  temp tmp;
+  tmp.tmp = "69";
+  tmp.data = formattedDate;
+  return tmp;
+}
+
+
+
+void ConnectWithDatabase(temp tmp) {
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  Firebase.setString("/ip", WiFi.localIP().toString());
+  JsonObject& root = jsonBuffer.createObject();
+  root["temperatura"] = tmp.tmp;
+  root["data"] = tmp.data;
+  Firebase.push("/temp", root);
 }
