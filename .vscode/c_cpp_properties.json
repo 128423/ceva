@@ -4,7 +4,7 @@
             "name": "Linux",
             "includePath": [
                 "/home/luis/Arduino/hardware/espressif/esp32/**",
-                "/home",
+                "/home/luis/Arduino/libraries/**",
                 "${workspaceFolder}/**"
             ],
             "defines": [],
