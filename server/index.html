@@ -1,77 +1,92 @@
 <html>
-<title>Ceva Project</title>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+  <title>Ceva Project</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
 
-<body class="w3-content" style="max-width:1300px">
-  <!-- First Grid: Logo & About -->
-  <div class="w3-row">
-    <div class="w3-half w3-black w3-container w3-center" style="height:700px">
-      <div class="w3-padding-64">
-        <h1>modo</h1>
+  <body class="w3-content" style="max-width:1300px">
+    <!-- First Grid: Logo & About -->
+    <div class="w3-row">
+      <div class="w3-half w3-black w3-container w3-center" style="height:700px">
+        <div class="w3-padding-64">
+          <h1>modo</h1>
+        </div>
+        <div class="w3-padding-64">
+          <button
+            class="w3-button w3-black w3-block w3-hover-brown w3-padding-16"
+          >
+            30 sec
+          </button>
+          <button
+            class="w3-button w3-black w3-block w3-hover-brown w3-padding-16"
+          >
+            1 min
+          </button>
+          <button
+            class="w3-button w3-black w3-block w3-hover-brown w3-padding-16"
+          >
+            5 min
+          </button>
+          <button
+            class="w3-button w3-black w3-block w3-hover-brown w3-padding-16"
+          >
+            10 min
+          </button>
+          <button
+            class="w3-button w3-black w3-block w3-hover-brown w3-padding-16"
+          >
+            Reset Time
+          </button>
+        </div>
       </div>
-      <div class="w3-padding-64">
-        <button class="w3-button w3-black w3-block w3-hover-brown w3-padding-16">
-          30 sec
-        </button>
-        <button class="w3-button w3-black w3-block w3-hover-brown w3-padding-16">
-          1 min
-        </button>
-        <button class="w3-button w3-black w3-block w3-hover-brown w3-padding-16">
-          5 min
-        </button>
-        <button class="w3-button w3-black w3-block w3-hover-brown w3-padding-16">
-          10 min
-        </button>
-        <button class="w3-button w3-black w3-block w3-hover-brown w3-padding-16">
-          Reset Time
-        </button>
-      </div>
-    </div>
-    <div class="w3-half w3-blue-grey w3-container" style="height:700px">
-      <div class="w3-padding-64 w3-center">
-        <h1>Ultima Consulta</h1>
-        <h2>temp: <b> 69</b></h2>
-        <div class="w3-left-align w3-padding-large">
-          <div id="piechart"></div>
+      <div class="w3-half w3-blue-grey w3-container" style="height:700px">
+        <div class="w3-padding-64 w3-center">
+          <h1>Ultima Consulta</h1>
+          <h2>
+            temp:
+            <img src="/test.svg"></img>
+          </h2>
+          <div class="w3-left-align w3-padding-large">
+            <div id="piechart"></div>
 
-          <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+            <script
+              type="text/javascript"
+              src="https://www.gstatic.com/charts/loader.js"
+            ></script>
 
-          <script type="text/javascript">
-            google.charts.load("current", { packages: ["corechart"] });
-            google.charts.setOnLoadCallback(drawChart);
+            <script type="text/javascript">
+              google.charts.load("current", { packages: ["corechart"] });
+              google.charts.setOnLoadCallback(drawChart);
 
-            function drawChart() {
-              var data = google.visualization.arrayToDataTable([
-                ["tempo", "Temperatura"],
-                ["time1", 8],
-                ["time2", 2],
-                ["time3", 4],
-                ["time4", 2],
-                ["time5", 60]
-              ]);
+              function drawChart() {
+                var data = google.visualization.arrayToDataTable([
+                  ["tempo", "Temperatura"],
+                  ["time1", %02d],
+                  ["time2", %02d],
+                  ["time3", %02d],
+                  ["time4", %02d],
+                  ["time5", %02d]
+                ]);
 
-              var options = {
-                title: "ultimas 5 mediçoes",
-                width: 550,
-                height: 400
-              };
+                var options = {
+                  title: "ultimas 5 mediçoes",
+                  width: 550,
+                  height: 400
+                };
 
-              var chart = new google.visualization.LineChart(
-                document.getElementById("piechart")
-              );
-              chart.draw(data, options);
-            }
-          </script>
+                var chart = new google.visualization.LineChart(
+                  document.getElementById("piechart")
+                );
+                chart.draw(data, options);
+              }
+            </script>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- Footer -->
-  <footer class="w3-container w3-black w3-padding-16">
-    <p>Batata</p>
-  </footer>
-</body>
-
+    <!-- Footer -->
+    <footer class="w3-container w3-black w3-padding-16">
+      <p>Batata</p>
+    </footer>
+  </body>
 </html>
