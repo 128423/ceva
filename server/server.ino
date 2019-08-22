@@ -19,29 +19,67 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 StaticJsonBuffer<200> jsonBuffer;
 WebServer server(80);
-const char *ssid = "sbsistemas_colaboradores";
-const char *password = "sbsistemas13524500";
 
+const char *ssid = "Luis_Ap";
+const char *password = "95370000";
 
+int ant1 = 0;
+int ant2 = 0;
+int ant3 = 0;
+int ant4 = 0;
+int ant5 = 0;
 
 const int led = 13;
 
 void handleRoot() {
   digitalWrite(led, 1);
-  char temp[400];
+  char temp[3000];
   int sec = millis() / 1000;
   int min = sec / 60;
   int hr = min / 60;
 
   snprintf(
-      temp, 400,
-
-      "<html>  <head>    <meta http-equiv='refresh' content='5'/>    "
-      "<title>ESP32 Demo</title>    <style>      body { background-color: "
-      "#cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }   "
-      " </style>  </head>  <body>    <h1>Hello from ESP32!</h1>    <p>Uptime: "
-      "%02d:%02d:%02d</p>    <img src=\"/test.svg\" />  </body></html>",
-
+      temp, 3000,
+      "<html><title>Ceva Project</title><meta charset=\"UTF-8\" /><meta "
+      "name=\"viewport\" content=\"width=device-width, initial-scale=1\" "
+      "/><link rel=\"stylesheet\" "
+      "href=\"https://www.w3schools.com/w3css/4/w3.css\" /><body "
+      "class=\"w3-content\" style=\"max-width:1300px\">  <!-- First Grid: Logo "
+      "& About -->  <div class=\"w3-row\">    <div class=\"w3-half w3-black "
+      "w3-container w3-center\" style=\"height:700px\">      <div "
+      "class=\"w3-padding-64\">        <h1>modo</h1>      </div>      <div "
+      "class=\"w3-padding-64\">        <button class=\"w3-button w3-black "
+      "w3-block w3-hover-brown w3-padding-16\">          30 sec        "
+      "</button>        <button class=\"w3-button w3-black w3-block "
+      "w3-hover-brown w3-padding-16\">          1 min        </button>        "
+      "<button class=\"w3-button w3-black w3-block w3-hover-brown "
+      "w3-padding-16\">          5 min        </button>        <button "
+      "class=\"w3-button w3-black w3-block w3-hover-brown w3-padding-16\">     "
+      "     10 min        </button>        <button class=\"w3-button w3-black "
+      "w3-block w3-hover-brown w3-padding-16\">          Reset Time        "
+      "</button>      </div>    </div>    <div class=\"w3-half w3-blue-grey "
+      "w3-container\" style=\"height:700px\">      <div class=\"w3-padding-64 "
+      "w3-center\">        <h1>Ultima Consulta</h1>        <h2>temp: <b> "
+      "69</b></h2>        <div class=\"w3-left-align w3-padding-large\">       "
+      "   <div id=\"piechart\"></div>          <script "
+      "type=\"text/javascript\" "
+      "src=\"https://www.gstatic.com/charts/loader.js\"></script>          "
+      "<script type=\"text/javascript\">            "
+      "google.charts.load(\"current\", { packages: [\"corechart\"] });         "
+      "   google.charts.setOnLoadCallback(drawChart);            function "
+      "drawChart() {              var data = "
+      "google.visualization.arrayToDataTable([                [\"tempo\", "
+      "\"Temperatura\"],                [\"time1\", 8],                "
+      "[\"time2\", 2],                [\"time3\", 4],                "
+      "[\"time4\", 2],                [\"time5\", 60]              ]);         "
+      "     var options = {                title: \"ultimas 5 mediçoes\",      "
+      "          width: 550,                height: 400              };        "
+      "      var chart = new google.visualization.LineChart(                "
+      "document.getElementById(\"piechart\")              );              "
+      "chart.draw(data, options);            }          </script>        "
+      "</div>      </div>    </div>  </div>  <!-- Footer -->  <footer "
+      "class=\"w3-container w3-black w3-padding-16\">    <p>Batata</p>  "
+      "</footer></body></html>",
       hr, min % 60, sec % 60);
 
   server.send(200, "text/html", temp);
@@ -101,8 +139,6 @@ void setup(void) {
   timeClient.begin();
   timeClient.setTimeOffset(-10800);
   temp tmp = getTemperatura();
-  Serial.print(tmp.tmp);
-  Serial.println(tmp.data);
   ConnectWithDatabase(tmp);
 }
 
