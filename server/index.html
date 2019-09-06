@@ -44,10 +44,10 @@
           <h1>Ultima Consulta</h1>
           <h2>
             temp:
-            <img src="/test.svg"></img>
+            <b> %f </b>
           </h2>
           <div class="w3-left-align w3-padding-large">
-            <div id="piechart"></div>
+            <div id="piechart" style="width: 300px; height: 300px;"></div>
 
             <script
               type="text/javascript"
@@ -61,20 +61,18 @@
               function drawChart() {
                 var data = google.visualization.arrayToDataTable([
                   ["tempo", "Temperatura"],
-                  ["time1", %02d],
-                  ["time2", %02d],
-                  ["time3", %02d],
-                  ["time4", %02d],
-                  ["time5", %02d]
+                  ["temp5", %f],
+                  ["temp4", %f],
+                  ["temp3", %f],
+                  ["temp2", %f],
+                  ["temp1", %f]
                 ]);
 
                 var options = {
                   title: "ultimas 5 mediçoes",
-                  width: 550,
-                  height: 400
                 };
 
-                var chart = new google.visualization.LineChart(
+                var chart = new google.visualization.AreaChart(
                   document.getElementById("piechart")
                 );
                 chart.draw(data, options);

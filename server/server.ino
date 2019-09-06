@@ -21,12 +21,13 @@ WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP);
 StaticJsonBuffer<200> jsonBuffer;
 WebServer server(80);
-OneWire oneWire(23);
+OneWire oneWire(22);
 DallasTemperature tempSensor(&oneWire);
 
 const char *ssid = "sbsistemas_colaboradores";
 const char *password = "sbsistemas13524500";
 
+int timmer = 10;
 float ant1 = 0;
 float ant2 = 0;
 float ant3 = 0;
@@ -77,9 +78,9 @@ void handleRoot() {
       "</div>      <div class=\"w3-half w3-blue-grey w3-container\" "
       "style=\"height:700px\">        <div class=\"w3-padding-64 w3-center\">  "
       "        <h1>Ultima Consulta</h1>          <h2>            temp:         "
-      "   <b>%f</b>         </h2>          <div "
-      "class=\"w3-left-align w3-padding-large\">            <div "
-      "id=\"piechart\"></div>            <script              "
+      "   <b> %f </b>          </h2>          <div class=\"w3-left-align "
+      "w3-padding-large\">            <div id=\"piechart\" style=\"width: "
+      "300px; height: 300px;\"></div>            <script              "
       "type=\"text/javascript\"              "
       "src=\"https://www.gstatic.com/charts/loader.js\"            ></script>  "
       "          <script type=\"text/javascript\">              "
@@ -87,13 +88,12 @@ void handleRoot() {
       "     google.charts.setOnLoadCallback(drawChart);              function "
       "drawChart() {                var data = "
       "google.visualization.arrayToDataTable([                  [\"tempo\", "
-      "\"Temperatura\"],                  [\"time1\", %f],                  "
-      "[\"time2\", %f],                  [\"time3\", %f],                  "
-      "[\"time4\", %f],                  [\"time5\", %f]                "
-      "]);                var options = {                  title: \"ultimas 5 "
-      "mediçoes\",                  width: 550,                  height: 400   "
-      "             };                var chart = new "
-      "google.visualization.LineChart(                  "
+      "\"Temperatura\"],                  [\"temp5\", %f],                  "
+      "[\"temp4\", %f],                  [\"temp3\", %f],                  "
+      "[\"temp2\", %f],                  [\"temp1\", %f]                ]);    "
+      "            var options = {                  title: \"ultimas 5 "
+      "mediçoes\",                };                var chart = new "
+      "google.visualization.AreaChart(                  "
       "document.getElementById(\"piechart\")                );                "
       "chart.draw(data, options);              }            </script>          "
       "</div>        </div>      </div>    </div>    <!-- Footer -->    "
@@ -149,6 +149,11 @@ void setup(void) {
   }
 
   server.on("/", handleRoot);
+  server.on("/time/{}", []() {
+    String aux = server.pathArg(0);
+    timmer = stoi(aux);
+    server.send(200, "text/plain", "timer: '" + aux + "'");
+  });
   server.on("/inline",
             []() { server.send(200, "text/plain", "this works as well"); });
   server.onNotFound(handleNotFound);
@@ -163,13 +168,12 @@ void setup(void) {
 
 void loop(void) { server.handleClient(); }
 
-
-
 temp getTemperatura() {
   while (!timeClient.update()) {
     timeClient.forceUpdate();
   }
   String formattedDate = timeClient.getFormattedDate();
+  tempSensor.requestTemperaturesByIndex(0);
   temp tmp;
   tmp.tmp = tempSensor.getTempCByIndex(0);
   termpush(tmp.tmp);
