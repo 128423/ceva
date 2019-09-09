@@ -6,12 +6,12 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 
-#define TIMMER_TO_POST 300000
 #define FIREBASE_HOST "https://cervejaproject.firebaseio.com/"
 #define FIREBASE_AUTH "wUVkY1GOhjqga45jdyu7CHG3k8jrja68KWq2TM1n"
 const char *ssid = "sbsistemas_colaboradores";
 const char *password = "sbsistemas13524500";
 const int led = 13;
+const int TIMMER_TO_POST = 300000;
 WiFiUDP ntpUDP;
 StaticJsonBuffer<200> jsonBuffer;
 NTPClient timeClient(ntpUDP);
@@ -69,8 +69,10 @@ void setup() {
   tempSensor.begin();
 }
 
-void loop(void) {
+void loop() {
   temp tmp = getTemperatura();
   ConnectWithDatabase(tmp);
-  sleep(TIMMER_TO_POST);
+  Serial.print("temperatra de:");
+  Serial.println(tmp.tmp);
+  delay(TIMMER_TO_POST);
 }
