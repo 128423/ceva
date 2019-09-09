@@ -151,7 +151,7 @@ void setup(void) {
   server.on("/", handleRoot);
   server.on("/time/{}", []() {
     String aux = server.pathArg(0);
-    timmer = stoi(aux);
+    // timmer = atoi(aux);
     server.send(200, "text/plain", "timer: '" + aux + "'");
   });
   server.on("/inline",
