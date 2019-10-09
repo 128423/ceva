@@ -8,8 +8,8 @@
 
 #define FIREBASE_HOST "https://cervejaproject.firebaseio.com/"
 #define FIREBASE_AUTH "wUVkY1GOhjqga45jdyu7CHG3k8jrja68KWq2TM1n"
-const char *ssid = "sbsistemas_colaboradores";
-const char *password = "sbsistemas13524500";
+const char *ssid = "Luis_Ap";
+const char *password = "95370000";
 const int led = 13;
 const int TIMMER_TO_POST = 300000;
 WiFiUDP ntpUDP;
@@ -64,15 +64,23 @@ void setup() {
   if (MDNS.begin("esp32")) {
     Serial.println("MDNS responder started");
   }
-  timeClient.begin();
-  timeClient.setTimeOffset(-10800);
-  tempSensor.begin();
 }
 
 void loop() {
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      Serial.print(".");
+    }
+  }
+  timeClient.begin();
+  timeClient.setTimeOffset(-10800);
+  tempSensor.begin();
   temp tmp = getTemperatura();
   ConnectWithDatabase(tmp);
-  Serial.print("temperatra de:");
+  Serial.print("temperatura de:");
   Serial.println(tmp.tmp);
   delay(TIMMER_TO_POST);
 }
